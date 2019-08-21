@@ -1,0 +1,211 @@
+<template>
+  <div class="right_wrapper">
+    <BreadCrumb :data="breadCrumbinit()" :separator="'>'" />
+    <ModuleView class="right_content">
+      <PanelTitle slot="header" :title="title" @back="back" />
+      <div slot="middle" class="right_table_content">
+        <div>
+          <el-button icon="el-icon-circle-plus-outline" size="small">添加</el-button>
+          <el-button icon="el-icon-delete" size="small">删除</el-button>
+          <el-button icon="el-icon-share" size="small" @click="goTree()">tree</el-button>
+        </div>
+        <div class="top_search">
+          <el-input suffix-icon="el-icon-search" type="text" placeholder="搜索" v-model="searchKey"></el-input>
+          <el-button icon="el-icon-circle-plus-outline" size="small">导入</el-button>
+        </div>
+      </div>
+      <Table
+        slot="footer"
+        ref="table"
+        :data="tableData"
+        :isSelection="true"
+        :header="getHeader()"
+        :isRowIndex="true"
+        :ifPage="true"
+        :pageSize="pageSize"
+        :showPagination="true"
+        isAllLayout="true"
+        :totalCount="totalCount"
+        :currentPage="currentPage"
+        @size-change="onPageSizeChange"
+        @on-page-change="onPageIndexChange"
+        v-loading="loading"
+      ></Table>
+    </ModuleView>
+  </div>
+</template>
+<script>
+import BreadCrumb from "../components/bread-crumb";
+import ModuleView from "../components/module-view";
+import PanelTitle from "../components/panel-title";
+import Table from "../components/table/table";
+import toop from "../utils";
+import dialogVue from "../components/dialog.vue";
+export default {
+  components: {
+    BreadCrumb,
+    ModuleView,
+    PanelTitle,
+    Table
+  },
+
+  data() {
+    return {
+      loading: false,
+      title: "组件管理",
+      pageNum: 1,
+      pageSize: 15,
+      currentPage: 1,
+      searchKey: "",
+      totalCount: 18,
+      tableData: Array(5).fill({
+        name: "zs",
+        code: "155874",
+        remark: "remark",
+        createdTime: this.formatData()
+      })
+    };
+  },
+  methods: {
+    breadCrumbinit() {
+      return [
+        {
+          name: "导航一",
+          to: "/index"
+        },
+        {
+          name: "选项一",
+          to: ""
+        }
+      ];
+    },
+    back() {
+      this.$router.push("/indexTree");
+    },
+    fetch() {
+      this.loading = true;
+      this.$http
+        .server(
+          `${$baseApi.baseApi[0]}/component/getPaged`,
+          "Get",
+          {
+            pageNum: this.currentPage,
+            pageSize: this.pageSize,
+            searchKey: "",
+            orderBy: "a.createdTime",
+            ascDesc: "DESC"
+          },
+          {},
+          $baseApi.accessToken,
+          $baseApi.appName[0]
+        )
+        .then(({ rows, count }) => {
+          this.tableData = rows;
+          this.totalCount = count;
+          this.loading = false;
+        });
+    },
+    getHeader() {
+      let self = this;
+      return [
+        {
+          prop: "code",
+          display: "编码"
+        },
+        {
+          prop: "name",
+          display: "名称"
+        },
+        {
+          prop: "remark",
+          display: "备注"
+        },
+        {
+          prop: "createdTime",
+          display: "创建时间",
+          formatter: (row) => {
+            return toop.formatDate(new Date(row.createdTime), 3);
+          }
+        },
+        {
+          display: "锁定",
+          formatter: (row) => {
+             return (
+             <div>
+               <el-switch v-model={row.isLocked}  active-value={0}
+               inactive-value={1}
+               onChange={()=>self.changeLocked(row)}></el-switch>
+             </div>
+            );
+          }
+        },
+        {
+          display: "操作"
+        }
+      ];
+    },
+    onPageSizeChange(paegSize) {
+      this.pageSize = paegSize;
+      this.fetch();
+    },
+    onPageIndexChange(pageIndex) {
+      this.currentPage = pageIndex;
+      this.fetch();
+    },
+    formatData(data, type) {
+      return toop.formatDate(new Date(), 3);
+    },
+    goTree() {
+      this.$router.push("/indexTree");
+    },
+    changeLocked(data){
+       console.log(data)
+    }
+
+  },
+  mounted() {
+    this.delaySearch = _.debounce(this.fetch.bind(this), 500);
+    this.fetch();
+    // this.formatData();
+  }
+};
+</script>
+<style lang="less">
+@import "../assets/variable.less";
+.right_wrapper {
+  height: 100%;
+  background-color: @weakBackgroundColor;
+  padding: 10px 20px;
+  box-sizing: border-box;
+  .right_content {
+    height: calc(~"100% - 50px");
+    border: 1px solid @boxBorderLineColor;
+    box-sizing: border-box;
+    border-radius: 3px;
+    .right_table_content {
+      box-sizing: border-box;
+      padding: 15px;
+      display: flex;
+      justify-content: space-between;
+      .top_search {
+        display: flex;
+        justify-content: space-around;
+        .el-input {
+          margin-right: 10px;
+        }
+        .el-input__inner {
+          height: 34px;
+          line-height: 34px;
+        }
+      }
+    }
+    .view-footer {
+      flex: 1;
+      overflow: auto;
+      box-sizing: border-box;
+      padding: 0 15px;
+    }
+  }
+}
+</style>
+
