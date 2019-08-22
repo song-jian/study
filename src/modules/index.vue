@@ -121,8 +121,8 @@ export default {
       margin-top: 36px;
       height: calc(100% - 36px);
       border-right:none; 
-      .el-submenu__title{
-        font-size: 16px;
+        span{
+          font-size: 16px;
       }
       .el-submenu__icon-arrow{
         right: 25px;

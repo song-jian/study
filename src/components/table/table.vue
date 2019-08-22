@@ -22,17 +22,7 @@
       @cell-dblclick="onCellDblclick">
       
        <el-table-column v-if="isRowIndex" type="index" width="50"></el-table-column>
-      <el-table-column v-if="isSelection" :selectable="isSelectable" type="selection" width="50"></el-table-column>
-      <el-table-column v-if="opsList" width="50" :label="opsList.display">
-        <template slot-scope="scope">
-          <ColumnPopover
-            :trigger="'click'"
-            :list="opsList.list"
-            :extraData="scope.row"
-            :isPermissionCheck="isPermissionCheck"
-            @operate-clicked="onMenuOperateHandler($event,scope.row)"/>
-        </template>
-      </el-table-column>
+      <el-table-column v-if="true" :selectable="isSelectable" type="selection" width="50"></el-table-column>
 
       <template v-for="(item,i) in header">
         <el-table-column v-if="item.filters"

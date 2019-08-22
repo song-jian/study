@@ -4,8 +4,8 @@ import router from './router';
 import baseApi from './common/baseapi';
 import scroller from 'vue-scroller';
 import ElementUI from 'element-ui';
-import _ from 'underscore'
 import 'element-ui/lib/theme-chalk/index.css';    // 默认主题
+import _ from 'underscore'
 import "babel-polyfill";
 Vue.use(ElementUI);
 Vue.use(scroller);

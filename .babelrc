@@ -1,0 +1,20 @@
+{
+  "presets": [
+    ["es2015", {
+      "modules": false
+    }],
+    "stage-2"
+  ],
+  "plugins": [
+    "transform-runtime",
+    "syntax-dynamic-import",
+    "jsx-v-model",
+    "transform-vue-jsx",
+  ],
+  "comments": false,
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    }
+  }
+}

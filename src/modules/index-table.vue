@@ -18,7 +18,6 @@
         slot="footer"
         ref="table"
         :data="tableData"
-        :isSelection="true"
         :header="getHeader()"
         :isRowIndex="true"
         :ifPage="true"
@@ -62,8 +61,9 @@ export default {
         name: "zs",
         code: "155874",
         remark: "remark",
+        isLocked:0,
         createdTime: this.formatData()
-      })
+      }),
     };
   },
   methods: {
@@ -123,24 +123,64 @@ export default {
         {
           prop: "createdTime",
           display: "创建时间",
-          formatter: (row) => {
+          formatter: row => {
             return toop.formatDate(new Date(row.createdTime), 3);
           }
         },
         {
           display: "锁定",
-          formatter: (row) => {
-             return (
-             <div>
-               <el-switch v-model={row.isLocked}  active-value={0}
-               inactive-value={1}
-               onChange={()=>self.changeLocked(row)}></el-switch>
-             </div>
+          formatter: row => {
+            return (
+              <div>
+                <el-switch
+                  v-model={row.isLocked}
+                  active-value={0}
+                  inactive-value={1}
+                  onChange={() => self.changeLocked(row)}
+                ></el-switch>
+              </div>
             );
+            
           }
         },
         {
-          display: "操作"
+          display: "操作",
+          width: 160,
+          formatter(row) {
+            return (
+              <div class="component-operate-wrapper">
+                <el-button
+                  title={row.isLocked ? "无法编辑" : "编辑"}
+                  size="small"
+                  type="text"
+                  class="iconfont el-icon-edit"
+                  onClick={() => {
+                    // self.goComponentEdit(row);
+                  }}
+                  disabled={row.isLocked ? true : false}
+                />
+               
+                <el-button
+                  title="删除"
+                  size="small"
+                  type="text"
+                  icon="iconfont el-icon-delete"
+                  onClick={() => {
+                    // self.delete([row.oid]);
+                  }}
+                />
+                <el-button
+                  title="查看"
+                  size="small"
+                  type="text"
+                  icon="iconfont el-icon-share"
+                  onClick={() => {
+                    // self.goComponentView(row);
+                  }}
+                />
+              </div>
+            );
+          }
         }
       ];
     },
@@ -158,10 +198,25 @@ export default {
     goTree() {
       this.$router.push("/indexTree");
     },
-    changeLocked(data){
-       console.log(data)
+    changeLocked(row) {
+      let data = {
+        isLocked: row.isLocked ? 1 : 0,
+        oid: row.oid
+      };
+      this.$http
+        .server(
+          `${$baseApi.baseApi[0]}/component/lockOrUnlock`,
+          "Put",
+          {},
+          data,
+          $baseApi.accessToken,
+          $baseApi.appName[0]
+        )
+        .then(() => {})
+        .catch(error => {
+          this.$error(error.msg);
+        });
     }
-
   },
   mounted() {
     this.delaySearch = _.debounce(this.fetch.bind(this), 500);

@@ -11,5 +11,5 @@ export default {
 
 <style lang="less">
  @import "../static/css/common.less";
- @import "../static/css/resseting.css";
+ @import "../static/css/resseting.less";
 </style>

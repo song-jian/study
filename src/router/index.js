@@ -17,7 +17,7 @@ const routes = [
     component: index,
     children: [{
       path: '',
-      component: svg,
+      component: indexTabel,
     }, {
       path: '/indexTree',
       component: indexTree,
