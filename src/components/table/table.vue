@@ -86,16 +86,17 @@ export default {
   components: {
     ColumnPopover
   },
-
+  
   updated() {
-
     this.updateSelection()
   },
 
   methods: {
 
-    isSelectable(item){
-      return !item[this.disabledCheckFiled];
+    //返回值決定這一行是否可以勾選  
+    // disabledCheckFiled:代表傳遞過來的每一項的數據帶一個是否可以選的屬性
+    isSelectable(row){
+      return !row[this.disabledCheckFiled];
     },
 
     onSortChange() {
@@ -140,7 +141,6 @@ export default {
 
     updateSelection() {
       let sourceTable = this.$refs.sourceTable
-
       sourceTable.clearSelection()
       if(this.isSelection) {
         _.each(this.data,(row)=>{
@@ -155,14 +155,7 @@ export default {
       this.$refs.sourceTable.toggleRowSelection(row,isChecked)
     },
 
-    onTablePageChange(pageCount) {
-
-      this.$emit('on-page-change',pageCount)
-    },
-    handleSizeChange(val) {
-      
-      this.$emit('size-change', val)
-    },
+    
     selectionChange(row) {
 
       if(this.isSelection && this.getRowCheckBoxState()) {
@@ -171,9 +164,9 @@ export default {
         this.$emit('on-selection-change',row,this)
       }
     },
-   
+    
+    // 當用戶點擊全選  為每一項賦值一個checked屬性
     onSelectAll(selection) {
-
       if(selection.length !== 0) {
         _.each(this.data,(s)=>{
           s.checked = true
@@ -185,27 +178,26 @@ export default {
       }
     },
 
+    //当用户手动勾选数据行的 Checkbox 时触发的事件
     onSelect(selection,row) {
-
       row.checked = !row.checked
       this.$emit('on-selection-change',row,this)
     },
 
-    onRowClick(row,event,column) {//當用某一行
+    //當點擊某一行觸發的事件
+    onRowClick(row,event,column) {
       let contxt = this.$refs.sourceTable
-      
       this.isSelection ? this.rowSelected(row) : ''; 
       if(!column.property===this.disabledCheckFiled){
         this.selectionChange(row)
       }
-
       this.$emit('on-row-click',row,event,contxt,column)
     },
 
     // 选中当前行时勾选复选框
     rowSelected(row) {
-      row.checked = !row.checked;
-      this.$refs.sourceTable.toggleRowSelection(row);
+      // row.checked = !row.checked;
+      // this.$refs.sourceTable.toggleRowSelection(row);
     },
 
     getRowCheckBoxState() {
@@ -216,7 +208,26 @@ export default {
 
       return false
     },
+    getSelection() {
+      let selections = []
+      console.log(this.data)
+      _.each(this.data,(row)=>{
+        if(row.checked) {
+          selections.push(_.clone(row))
+        }
+      })
 
+      return selections
+    },
+
+    onTablePageChange(pageCount) {
+
+      this.$emit('on-page-change',pageCount)
+    },
+    handleSizeChange(val) {
+      
+      this.$emit('size-change', val)
+    },
     onFilterMethod (value, row, column) {
       this.$emit('on-filter-method', value, row, column)
       return row[column.property] == value;
@@ -235,20 +246,6 @@ export default {
       }
       return null
     },
-
-    getSelection() {
-      let selections = []
-
-      _.each(this.data,(row)=>{
-        if(row.checked) {
-          selections.push(_.clone(row))
-        }
-      })
-
-      return selections
-    },
-
-    
 
     onCellDblclick(cell) {
     
