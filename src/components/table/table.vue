@@ -22,7 +22,7 @@
       @cell-dblclick="onCellDblclick">
       
        <el-table-column v-if="isRowIndex" type="index" width="50"></el-table-column>
-      <el-table-column v-if="true" :selectable="isSelectable" type="selection" width="50"></el-table-column>
+      <el-table-column v-if="isSelection" :selectable="isSelectable" type="selection" width="50"></el-table-column>
 
       <template v-for="(item,i) in header">
         <el-table-column v-if="item.filters"
@@ -191,7 +191,7 @@ export default {
       this.$emit('on-selection-change',row,this)
     },
 
-    onRowClick(row,event,column) {
+    onRowClick(row,event,column) {//當用某一行
       let contxt = this.$refs.sourceTable
       
       this.isSelection ? this.rowSelected(row) : ''; 

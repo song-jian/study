@@ -21,6 +21,7 @@
         :header="getHeader()"
         :isRowIndex="true"
         :ifPage="true"
+        :isSelection="true"
         :pageSize="pageSize"
         :showPagination="true"
         isAllLayout="true"
@@ -40,6 +41,7 @@ import PanelTitle from "../components/panel-title";
 import Table from "../components/table/table";
 import toop from "../utils";
 import dialogVue from "../components/dialog.vue";
+import tableData from '../assets/tableData'
 export default {
   components: {
     BreadCrumb,
@@ -57,13 +59,7 @@ export default {
       currentPage: 1,
       searchKey: "",
       totalCount: 18,
-      tableData: Array(5).fill({
-        name: "zs",
-        code: "155874",
-        remark: "remark",
-        isLocked:0,
-        createdTime: this.formatData()
-      }),
+      tableData:tableData
     };
   },
   methods: {
@@ -140,7 +136,6 @@ export default {
                 ></el-switch>
               </div>
             );
-            
           }
         },
         {
@@ -159,7 +154,7 @@ export default {
                   }}
                   disabled={row.isLocked ? true : false}
                 />
-               
+
                 <el-button
                   title="删除"
                   size="small"
@@ -199,28 +194,29 @@ export default {
       this.$router.push("/indexTree");
     },
     changeLocked(row) {
-      let data = {
-        isLocked: row.isLocked ? 1 : 0,
-        oid: row.oid
-      };
-      this.$http
-        .server(
-          `${$baseApi.baseApi[0]}/component/lockOrUnlock`,
-          "Put",
-          {},
-          data,
-          $baseApi.accessToken,
-          $baseApi.appName[0]
-        )
-        .then(() => {})
-        .catch(error => {
-          this.$error(error.msg);
-        });
+      row.isLocked = row.isLocked?1:0
+      // let data = {
+      //   isLocked: row.isLocked ? 1 : 0,
+      //   oid: row.oid
+      // };
+      // this.$http
+      //   .server(
+      //     `${$baseApi.baseApi[0]}/component/lockOrUnlock`,
+      //     "Put",
+      //     {},
+      //     data,
+      //     $baseApi.accessToken,
+      //     $baseApi.appName[0]
+      //   )
+      //   .then(() => {})
+      //   .catch(error => {
+      //     this.$error(error.msg);
+      //   });
     }
   },
   mounted() {
     this.delaySearch = _.debounce(this.fetch.bind(this), 500);
-    this.fetch();
+    // this.fetch();
     // this.formatData();
   }
 };
