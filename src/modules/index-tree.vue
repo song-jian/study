@@ -126,27 +126,29 @@ export default {
         .catch(error => {});
     },
     append(data) {
-      this.showDialig().then(param => {
-        param.parentId = data.oid;
-        this.$http
-          .server(
-            `${$baseApi.baseApi[0]}/componentType`,
-            "Post",
-            {},
-            param,
-            $baseApi.accessToken,
-            $baseApi.appName[0]
-          )
-          .then(() => {
-            this.getTree();
-          });
-      });
+      this.showDialig()
+        .then(param => {
+          param.parentId = data.oid;
+          this.$http
+            .server(
+              `${$baseApi.baseApi[0]}/componentType`,
+              "Post",
+              {},
+              param,
+              $baseApi.accessToken,
+              $baseApi.appName[0]
+            )
+            .then(() => {
+              this.getTree();
+            });
+        })
+        .catch(error => {});
     },
     remove(oid) {
       this.$alert("确定删除么", "Warning").then(() => {
         this.$http
           .server(
-            `${$baseApi.baseApi[0]}/componentType/deleteByOid`,
+            `${$baseApi.baseApi[0]}/componentType/deleteByOids`,
             "Delete",
             {},
             { oid },
@@ -154,7 +156,11 @@ export default {
             $baseApi.appName[0]
           )
           .then(() => {
+            console.log('ll')
             this.getTree();
+          })
+          .catch(error => {
+            this.$error(error);
           });
       });
     },
@@ -214,13 +220,13 @@ export default {
       align-items: center;
       width: 100%;
       > span:nth-child(1) {
-       font-size: 14px;
+        font-size: 14px;
       }
       > span:nth-child(2) {
         position: absolute;
         left: 400px;
         font-size: 16px;
-        i{
+        i {
           font-size: 14px;
         }
       }
