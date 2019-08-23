@@ -6,6 +6,7 @@ const indexTree = () =>import(/*webpackChunkName:"index"*/ '@/modules/index-tree
 const echart = () =>import(/*webpackChunkName:"index"*/ '@/modules/echart.vue');
 Vue.use(Router);
 const svg = () =>import(/*webpackChunkName:"index"*/ '@/modules/svg.vue');
+const createform = () =>import(/*webpackChunkName:"index"*/ '@/modules/create_form.vue');
 Vue.use(Router)
 const routes = [
   {
@@ -15,13 +16,19 @@ const routes = [
   {
     path: '/index',
     component: index,
-    children: [{
-      path: '',
-      component: indexTabel,
-    }, {
-      path: '/indexTree',
-      component: indexTree,
-    }]
+    children: [
+      {
+        path: '',
+        component: indexTabel,
+      },{
+        path: '/indexTree',
+        component: indexTree,
+      },{
+        path:'/createform',
+        component:createform
+      }
+
+    ]
   }
 ]
 export default new Router({

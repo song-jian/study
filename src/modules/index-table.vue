@@ -1,3 +1,10 @@
+<!--
+ * @Description: In User Settings Edit
+ * @Author: your name
+ * @Date: 2019-08-22 10:33:32
+ * @LastEditTime: 2019-08-23 14:34:26
+ * @LastEditors: Please set LastEditors
+ -->
 <template>
   <div class="right_wrapper">
     <BreadCrumb :data="breadCrumbinit()" :separator="'>'" />
@@ -5,8 +12,8 @@
       <PanelTitle slot="header" :title="title" @back="back" />
       <div slot="middle" class="right_table_content">
         <div>
-          <el-button icon="el-icon-circle-plus-outline" size="small">添加</el-button>
-          <el-button icon="el-icon-delete" size="small">删除</el-button>
+          <el-button icon="el-icon-circle-plus-outline" size="small" @click="goCreateForm">添加</el-button>
+          <el-button icon="el-icon-delete" size="small" @click="deleteSelect">删除</el-button>
           <el-button icon="el-icon-share" size="small" @click="goTree()">tree</el-button>
         </div>
         <div class="top_search">
@@ -27,6 +34,7 @@
         isAllLayout="true"
         :totalCount="totalCount"
         :currentPage="currentPage"
+        :rowContCheckBox='false'
         @size-change="onPageSizeChange"
         @on-page-change="onPageIndexChange"
         v-loading="loading"
@@ -59,7 +67,8 @@ export default {
       currentPage: 1,
       searchKey: "",
       totalCount: 18,
-      tableData:tableData
+      // tableData:tableData,
+      tableData:[]
     };
   },
   methods: {
@@ -195,28 +204,59 @@ export default {
     },
     changeLocked(row) {
       row.isLocked = row.isLocked?1:0
-      // let data = {
-      //   isLocked: row.isLocked ? 1 : 0,
-      //   oid: row.oid
-      // };
-      // this.$http
-      //   .server(
-      //     `${$baseApi.baseApi[0]}/component/lockOrUnlock`,
-      //     "Put",
-      //     {},
-      //     data,
-      //     $baseApi.accessToken,
-      //     $baseApi.appName[0]
-      //   )
-      //   .then(() => {})
-      //   .catch(error => {
-      //     this.$error(error.msg);
-      //   });
+      let data = {
+        isLocked: row.isLocked ? 1 : 0,
+        oid: row.oid
+      };
+      this.$http
+        .server(
+          `${$baseApi.baseApi[0]}/component/lockOrUnlock`,
+          "Put",
+          {},
+          data,
+          $baseApi.accessToken,
+          $baseApi.appName[0]
+        )
+        .then(() => {})
+        .catch(error => {
+          this.$error(error.msg);
+        });
+    },
+    deleteSelect(){
+      let selected = this.$refs.table.getSelection();
+      if (selected.length) {
+        selected = _.map(selected, one => {
+          return one.oid;
+        });
+        this.delete(selected);
+      }
+    },
+    delete(oids) {
+      this.$alert("确定删除","Warning").then(() => {
+        this.$http
+        .server(
+          `${$baseApi.baseApi[0]}/component`,
+          "Delete",
+          {},
+          oids,
+          $baseApi.accessToken,
+          $baseApi.appName[0]
+        )
+          .then(() => {
+            this.fetch();
+          })
+          .catch(error => {
+            this.$error(error.msg);
+          });
+      });
+    },
+    goCreateForm(){
+      this.$router.push('/createform')
     }
   },
   mounted() {
     this.delaySearch = _.debounce(this.fetch.bind(this), 500);
-    // this.fetch();
+    this.fetch();
     // this.formatData();
   }
 };
