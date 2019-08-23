@@ -1,9 +1,10 @@
 <template>
   <div v-loading="loading" class="classifytree-wrapper">
-    <div class="header">
-      <span>{{title}}</span>
-      <el-button size="small" @click="back">{{goback}}</el-button>
-    </div>
+    <BreadCrumb :data="getTitle()">
+      <div class="back" slot="after">
+        <el-button type="primary" size="small">返回</el-button>
+      </div>
+    </BreadCrumb>
     <div class="treecontent">
       <el-tree
         node-key="id"
@@ -19,8 +20,9 @@
 </template>
 <script>
 import Dialog from "../components/dialog";
+import BreadCrumb from "../components/bread-crumb";
 export default {
-  components: { Dialog },
+  components: { Dialog, BreadCrumb },
   data() {
     return {
       loading: false,
@@ -33,7 +35,13 @@ export default {
       }
     };
   },
+  created() {
+    this.getTree();
+  },
   methods: {
+    getTitle() {
+      return [{ name: "tree" }];
+    },
     getTree() {
       this.loading = true;
       this.$http
@@ -64,6 +72,14 @@ export default {
         <div class="tree-wrapper">
           <span>{data.name}</span>
           <span>
+            <el-button
+              size="mini"
+              type="text"
+              icon="el-icon-plus"
+              on-click={() => this.append(data)}
+            >
+              添加
+            </el-button>
             {_.size(data.oid) > 0 ? (
               <el-button
                 size="mini"
@@ -74,14 +90,7 @@ export default {
                 编辑
               </el-button>
             ) : null}
-            <el-button
-              size="mini"
-              type="text"
-              icon="el-icon-plus"
-              on-click={() => this.append(data)}
-            >
-              添加
-            </el-button>
+
             {_.size(data.oid) > 0 ? (
               <el-button
                 size="mini"
@@ -97,24 +106,24 @@ export default {
       );
     },
     edit(data) {
-      this.showDialig(data).then((newData) => {
-        let param = { oid: newData.oid, name: newData.name };
-        this.$http
-          .server(
-            `${$baseApi.baseApi[0]}/componentType`,
-            "Put",
-            {},
-            param,
-            $baseApi.accessToken,
-            $baseApi.appName[0]
-          )
-          .then((data) => {
-            this.getTree();
-          }).catch(()=>{
-          });
-      }).catch((error)=>{
-          
-      });
+      this.showDialig(data)
+        .then(newData => {
+          let param = { oid: newData.oid, name: newData.name };
+          this.$http
+            .server(
+              `${$baseApi.baseApi[0]}/componentType`,
+              "Put",
+              {},
+              param,
+              $baseApi.accessToken,
+              $baseApi.appName[0]
+            )
+            .then(data => {
+              this.getTree();
+            })
+            .catch(() => {});
+        })
+        .catch(error => {});
     },
     append(data) {
       this.showDialig().then(param => {
@@ -164,54 +173,60 @@ export default {
         }
       });
     }
-  },
-  created() {
-    this.getTree();
   }
 };
 </script>
-<style lang="less">
+<style lang="less" scpoed>
 @import "../assets/variable.less";
 .classifytree-wrapper {
   background-color: #f2f4f6;
-  border-radius: 3px;
-  padding: 20px;
+  padding: 0px 20px 20px;
   height: 100%;
+  width: calc(100% -250px);
   box-sizing: border-box;
-  .header {
-    display: table;
-    padding: 10px 20px;
-    border-bottom: 1px solid @weakLineColor;
-    width: 100%;
-    background-color: #fff;
-    box-sizing: border-box;
-    line-height: 32px;
-
-    .el-button {
-      float: right;
-    }
+  .back {
+    height: 100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
   }
   .treecontent {
-    display: flex;
-    justify-content: space-between;
-    box-sizing: border-box;
-    height: calc(~"100% - 55px");
-    padding: 0 20px;
+    padding-bottom: 20px;
+    height: calc(~"100% - 50px");
+    border: 1px solid @weakLineColor;
     background-color: #fff;
+    box-sizing: border-box;
+    border-radius: 4px;
     .el-tree {
       width: 100%;
       height: 100%;
+      border-radius: 4px;
       overflow-y: auto;
     }
-  }
-  .tree-wrapper {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    font-size: 14px;
-    width: 100%;
-    .el-button--text {
-      color: #606266 !important;
+    .el-tree-node__content {
+      border-bottom: 1px solid @weakLineColor;
+      padding: 7px 15px;
+      &:hover {
+        background-color: #ecf5ff;
+      }
+    }
+    .tree-wrapper {
+      align-items: center;
+      width: 100%;
+      > span:nth-child(1) {
+       font-size: 14px;
+      }
+      > span:nth-child(2) {
+        position: absolute;
+        left: 400px;
+        font-size: 16px;
+        i{
+          font-size: 14px;
+        }
+      }
+      .el-button--text {
+        color: #606266 !important;
+      }
     }
   }
 }

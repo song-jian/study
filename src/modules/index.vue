@@ -133,7 +133,8 @@ export default {
     }
   }
   .my_content{
-    width: calc(100% - 250px);
+    width: 100%;
+    overflow-x: hidden;
     height: 100%;
   }
 }

@@ -265,8 +265,9 @@ export default {
 @import "../assets/variable.less";
 .right_wrapper {
   height: 100%;
+  width: 100%;
   background-color: @weakBackgroundColor;
-  padding: 10px 20px;
+  padding: 0 20px 20px;
   box-sizing: border-box;
   .right_content {
     height: calc(~"100% - 50px");
