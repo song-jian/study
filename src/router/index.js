@@ -7,6 +7,7 @@ const echart = () =>import(/*webpackChunkName:"index"*/ '@/modules/echart.vue');
 Vue.use(Router);
 const svg = () =>import(/*webpackChunkName:"index"*/ '@/modules/svg.vue');
 const createform = () =>import(/*webpackChunkName:"index"*/ '@/modules/create_form.vue');
+const parent_son = () =>import(/*webpackChunkName:"index"*/ '@/modules/parent_son.vue');
 Vue.use(Router)
 const routes = [
   {
@@ -26,6 +27,9 @@ const routes = [
       },{
         path:'/createform',
         component:createform
+      },{
+        path:'/parent_son',
+        component:parent_son
       }
 
     ]

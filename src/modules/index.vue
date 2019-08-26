@@ -37,7 +37,7 @@ export default {
             {
               id:'3',
               name: "选项二",
-              path: "/3",
+              path: "/parent_son",
               
             },
             { 
