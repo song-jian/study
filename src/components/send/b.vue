@@ -4,7 +4,8 @@
   </div>
 </template>
 <script>
-import event_btn from "../../utils/event-btn";
+import EventBtn from "../../utils/event-btn";
+console.log(EventBtn.on)
 export default {
   data() {
     return {
@@ -16,7 +17,7 @@ export default {
   },
   methods: {
     bbtn() {
-      this.event_btn.$on("myFun", message => {
+      EventBtn.on("myFun", message => {
         //这里最好用箭头函数，不然this指向有问题
         this.bmsg = message;
       });

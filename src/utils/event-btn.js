@@ -88,4 +88,4 @@ EventBus.prototype.emit = function() {
   }
 }
 
-export default EventBus
+export default new EventBus()

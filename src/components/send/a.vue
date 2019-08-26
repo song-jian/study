@@ -5,8 +5,8 @@
   </div>
 </template>
 <script>
-import event_btn from "../../utils/event-btn"
-console.log(event_btn)
+import EventBtn from "../../utils/event-btn"
+
 export default {
   data(){
     return {
@@ -15,7 +15,7 @@ export default {
   },
   methods:{
     Abtn(){
-       this.event_btn.$emit("myFun",this.amsg)
+      EventBtn.emit("myFun",this.amsg)
     }
   }
 }
