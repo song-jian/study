@@ -13,10 +13,18 @@ const server = (url,method,params,data,accesstoken,appName)=>{
             params,
             data
         }).then(res => {
-            resolve(res.data.result);
+            if(isSuccess(res)){
+                resolve(res.data.result);
+            }else{
+                reject(res.data)
+            }
         }).catch(err =>{
             reject(err.data)        
         })    
     })
+}
+
+const isSuccess = (res)=>{
+    return res && res.data && res.data.code === 0
 }
 export default {server}

@@ -34,7 +34,7 @@
         isAllLayout="true"
         :totalCount="totalCount"
         :currentPage="currentPage"
-        :rowContCheckBox='false'
+        :rowContCheckBox="false"
         @size-change="onPageSizeChange"
         @on-page-change="onPageIndexChange"
         v-loading="loading"
@@ -49,7 +49,7 @@ import PanelTitle from "../components/panel-title";
 import Table from "../components/table/table";
 import toop from "../utils";
 import dialogVue from "../components/dialog.vue";
-import tableData from '../assets/tableData'
+import tableData from "../assets/tableData";
 export default {
   components: {
     BreadCrumb,
@@ -68,7 +68,7 @@ export default {
       searchKey: "",
       totalCount: 18,
       // tableData:tableData,
-      tableData:[]
+      tableData: []
     };
   },
   methods: {
@@ -89,26 +89,24 @@ export default {
     },
     fetch() {
       this.loading = true;
-      this.$http
-        .server(
-          `${$baseApi.baseApi[0]}/component/getPaged`,
-          "Get",
-          {
-            pageNum: this.currentPage,
-            pageSize: this.pageSize,
-            searchKey: "",
-            orderBy: "a.createdTime",
-            ascDesc: "DESC"
-          },
-          {},
-          $baseApi.accessToken,
-          $baseApi.appName[0]
-        )
-        .then(({ rows, count }) => {
-          this.tableData = rows;
-          this.totalCount = count;
-          this.loading = false;
-        });
+      this.$http(
+        `${$baseApi.baseApi[0]}/component/getPaged`,
+        "Get",
+        {
+          pageNum: this.currentPage,
+          pageSize: this.pageSize,
+          searchKey: "",
+          orderBy: "a.createdTime",
+          ascDesc: "DESC"
+        },
+        {},
+        $baseApi.accessToken,
+        $baseApi.appName[0]
+      ).then(({ rows, count }) => {
+        this.tableData = rows;
+        this.totalCount = count;
+        this.loading = false;
+      });
     },
     getHeader() {
       let self = this;
@@ -170,7 +168,7 @@ export default {
                   type="text"
                   icon="iconfont el-icon-delete"
                   onClick={() => {
-                    // self.delete([row.oid]);
+                    self.delete([row.oid]);
                   }}
                 />
                 <el-button
@@ -203,38 +201,36 @@ export default {
       this.$router.push("/indexTree");
     },
     changeLocked(row) {
-      row.isLocked = row.isLocked?1:0
+      row.isLocked = row.isLocked ? 1 : 0;
       let data = {
         isLocked: row.isLocked ? 1 : 0,
         oid: row.oid
       };
-      this.$http
-        .server(
-          `${$baseApi.baseApi[0]}/component/lockOrUnlock`,
-          "Put",
-          {},
-          data,
-          $baseApi.accessToken,
-          $baseApi.appName[0]
-        )
+      this.$http(
+        `${$baseApi.baseApi[0]}/component/lockOrUnlock`,
+        "Put",
+        {},
+        data,
+        $baseApi.accessToken,
+        $baseApi.appName[0]
+      )
         .then(() => {})
         .catch(error => {
           this.$error(error.msg);
         });
     },
-    deleteSelect(){
+    deleteSelect() {
       let selected = this.$refs.table.getSelection();
       if (selected.length) {
-        selected = _.map(selected, one => {
+        selected = this._.map(selected, one => {
           return one.oid;
         });
         this.delete(selected);
       }
     },
     delete(oids) {
-      this.$alert("确定删除","Warning").then(() => {
-        this.$http
-        .server(
+      this.$alert("确定删除", "Warning").then(() => {
+        this.$http(
           `${$baseApi.baseApi[0]}/component`,
           "Delete",
           {},
@@ -250,8 +246,8 @@ export default {
           });
       });
     },
-    goCreateForm(){
-      this.$router.push('/createform')
+    goCreateForm() {
+      this.$router.push("/createform");
     }
   },
   mounted() {

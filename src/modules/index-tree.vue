@@ -140,9 +140,12 @@ export default {
             )
             .then(() => {
               this.getTree();
+            }).catch(error => {
+              console.log(error)
+               this.$message.error(error.msg);
             });
         })
-        .catch(error => {});
+        
     },
     remove(oid) {
       this.$alert("确定删除么", "Warning").then(() => {
@@ -160,7 +163,8 @@ export default {
             this.getTree();
           })
           .catch(error => {
-            this.$error(error);
+            // this.$error(error);
+            this.$message.error(erroe.msg);
           });
       });
     },
