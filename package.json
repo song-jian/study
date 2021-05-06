@@ -19,7 +19,7 @@
     "element-ui": "^2.9.1",
     "file-saver": "^2.0.2",
     "mysql": "^2.15.0",
-    "underscore": "^1.9.1",
+    "underscore": "^1.12.1",
     "vue": "^2.3.2",
     "vue-core-image-upload": "2.1.11",
     "vue-datasource": "1.0.9",
